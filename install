@@ -1,0 +1,53 @@
+#!/usr/bin/env racket
+#lang racket/base
+
+(require racket/dict)
+(require racket/block)
+
+(define home-dir (find-system-path 'home-dir))
+(define config-dir (build-path home-dir ".config"))
+(define vim-dir (build-path home-dir ".vim"))
+(define dotfile-dir (find-system-path 'orig-dir))
+
+(define file-destinations (list 
+  (cons ".vimrc" home-dir)
+  (cons ".tmux.conf" home-dir)
+  (cons "bspwmrc" (build-path config-dir "bspwm"))
+  (cons "sxhkdrc" (build-path config-dir "sxhkd"))
+  (cons ".bashrc" home-dir)
+  (cons ".Xresources" home-dir)
+  (cons "scripts.vim" vim-dir)))
+
+(define (user-responds-yes?)
+  (let ([char (read-char (current-input-port))])
+    (cond
+      [(equal? char #\newline) (user-responds-yes?)]
+      [(or (equal? char #\y) (equal? char #\Y)) #t]
+      [(or (equal? char #\n) (equal? char #\N)) #f]
+      [else (block
+        (printf "~v Please enter a 'y' or 'n'.\n" char)
+        (user-responds-yes?))]
+    )))
+
+(define (check-and-symlink-file filename destination-dir)
+  (let ([source (build-path dotfile-dir filename)]
+        [destination (build-path destination-dir filename)])
+    (cond
+      [(not (file-exists? source))
+        (printf "~v does not exist." source)]
+
+      [(file-exists? destination) (block
+        (printf "~v exists! Do you want to overwrite? (y/n)\n" 
+          (path->string destination))
+        (and
+          (user-responds-yes?)
+          (block
+            (delete-file destination)
+            (make-file-or-directory-link source destination))))]
+
+      [else (make-file-or-directory-link source destination)]
+    )))
+
+(block
+  (dict-map file-destinations check-and-symlink-file)
+  (printf "Done.\n"))

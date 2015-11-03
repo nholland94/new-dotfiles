@@ -18,6 +18,8 @@ NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'Shougo/unite.vim'
 " NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'vim-scripts/AutoComplPop'
+"NeoBundle 'vim-scripts/c.vim'
+NeoBundle 'michalbachowski/vim-wombat256mod'
 " }}}
 
 call neobundle#end()
@@ -29,9 +31,8 @@ filetype plugin on
 filetype indent on
 
 syntax on
-colorscheme industry
+colorscheme wombat256mod
 
-set autoindent
 set tabstop=2 shiftwidth=2 expandtab
 set foldmethod=marker
 " }}}
