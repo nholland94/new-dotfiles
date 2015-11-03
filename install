@@ -10,12 +10,14 @@
 (define dotfile-dir (find-system-path 'orig-dir))
 
 (define file-destinations (list 
-  (cons ".vimrc" home-dir)
-  (cons ".tmux.conf" home-dir)
+  (cons ".bashrc" home-dir)
+  (cons ".profile" home-dir)
+  (cons ".xinitrc" home-dir)
+  (cons ".Xresources" home-dir)
   (cons "bspwmrc" (build-path config-dir "bspwm"))
   (cons "sxhkdrc" (build-path config-dir "sxhkd"))
-  (cons ".bashrc" home-dir)
-  (cons ".Xresources" home-dir)
+  (cons ".vimrc" home-dir)
+  (cons ".tmux.conf" home-dir)
   (cons "scripts.vim" vim-dir)))
 
 (define (user-responds-yes?)
