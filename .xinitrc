@@ -1,10 +1,8 @@
 #!/bin/sh
 
-touch ~/.bspwm.running
-
 xrdb -merge ~/.Xresources &
 sxhkd &
 
-while [ -e ~/.bspwm.running ]; do
+while true; do
   bspwm || break
 done

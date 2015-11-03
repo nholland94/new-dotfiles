@@ -3,7 +3,7 @@
 #
 
 alt + super + Escape
-	rm ~/.bspwm.running; bspc quit
+  bspc quit 1
 
 alt + w
 	bspc window -c
@@ -86,14 +86,10 @@ alt + Return
 alt + space
 	dmenu_run
 
-# make sxhkd reload its configuration files:
-alt + Escape
-	pkill -USR1 -x sxhkd
-
-# make bspwm relkoad its configuration files:
+# reload configuration
 alt + shift + r
-  {bspc query -T > "$BSPWM_TREE"; \
-      bspc query -H > "$BSPWM_HISTORY"; \
-      bspc query -S > "$BSPWM_STACK"; \
-      bspc quit,\
-   bspc quit 1}
+	pkill -USR1 -x sxhkd; \
+  bspc query -T > "$BSPWM_TREE"; \
+  bspc query -H > "$BSPWM_HISTORY"; \
+  bspc query -S > "$BSPWM_STACK"; \
+  bspc quit
