@@ -3,7 +3,7 @@
 #
 
 alt + super + Escape
-  bspc quit 1
+  pkill -x panel; bspc quit 1
 
 alt + w
 	bspc window -c
@@ -92,4 +92,5 @@ alt + shift + r
   bspc query -T > "$BSPWM_TREE"; \
   bspc query -H > "$BSPWM_HISTORY"; \
   bspc query -S > "$BSPWM_STACK"; \
+  pkill -x panel; \
   bspc quit

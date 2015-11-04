@@ -5,6 +5,7 @@
 (require racket/block)
 
 (define home-dir (find-system-path 'home-dir))
+(define home-bin-dir (build-path home-dir "bin"))
 (define config-dir (build-path home-dir ".config"))
 (define vim-dir (build-path home-dir ".vim"))
 (define dotfile-dir (find-system-path 'orig-dir))
@@ -18,7 +19,9 @@
   (cons "sxhkdrc" (build-path config-dir "sxhkd"))
   (cons ".vimrc" home-dir)
   (cons ".tmux.conf" home-dir)
-  (cons "scripts.vim" vim-dir)))
+  (cons "scripts.vim" vim-dir)
+  (cons "racket_panel" home-bin-dir)
+  (cons "colors" home-dir)))
 
 (define (user-responds-yes?)
   (let ([char (read-char (current-input-port))])

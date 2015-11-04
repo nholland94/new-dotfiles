@@ -1,0 +1,134 @@
+#!/bin/sh
+#|
+
+COLOR_FOREGROUND=$(cat colors | sed -n -e 's/^foreground\s\+//p')
+COLOR_BACKGROUND=$(cat colors | sed -n -e 's/^background\s\+//p')
+
+trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+mkfifo "$PANEL_FIFO"
+
+
+bspc config top_padding $PANEL_HEIGHT
+xtitle -sf 'T%s' > "$PANEL_FIFO" &
+clock -sf 'C%a %H:%M' > "$PANEL_FIFO" &
+
+cat "$PANEL_FIFO" | racket -u "$0" >&1
+    # | lemonbar -n "lemonpanel" -f "$PANEL_FONT_FAMILY" -F "COLOR_FOREGROUND" -B "COLOR_BACKGROUND" &
+
+wait
+exit 0
+|#
+
+#lang racket/base
+
+(require racket/block)
+(require racket/dict)
+(require racket/match)
+(require racket/string)
+
+(define (map-lines in fn [ls '()])
+  (let ([line (read-line in)])
+    (if (equal? line eof)
+      ls
+      (map-lines in fn (cons (fn line) ls)))))
+
+(define colors
+  (call-with-input-file "colors"
+    (lambda (in)
+      (map-lines in
+        (lambda (line)
+          (let ([parts (string-split (string-normalize-spaces line))])
+            (cons
+              (string->symbol (car parts))
+              (string-upcase (car (cdr parts))))))))))
+
+(define (strip-first-char str)
+  (list->string (cdr (string->list str))))
+
+(define (lemonbar-modifier inner-text)
+  (string-join
+    (list
+      "%{"
+      inner-text
+      "}")
+    ""))
+
+(define (lemonbar-color-code color)
+  (match color
+    ['foreground #\F]
+    ['background #\B]))
+
+(define (lemonbar-set-color color value)
+  (lemonbar-modifier
+    (string-join
+      (list
+        (if (string? color) color (string (lemonbar-color-code color)))
+        value
+      ""))))
+
+(define (lemonbar-colored-text foreground-color background-color text)
+  (string-join
+    (list
+      (lemonbar-set-color 'foreground foreground-color)
+      (lemonbar-set-color 'background background-color)
+      " "
+      text
+      " "
+      (lemonbar-set-color 'foreground foreground-color)
+      (lemonbar-set-color 'background background-color))
+    ""))
+
+(define (lemonbar-alignment-code alignment)
+  (match alignment
+    ['left #\l]
+    ['center #\c]
+    ['right #\r]))
+
+(define (lemonbar-update items)
+  (write
+    (foldr
+      (lambda (alignment-pair str)
+        (string-join
+          (list
+            str
+            (lemonbar-modifier
+              (string (lemonbar-alignment-code (car alignment-pair))))
+            (car (cdr alignment-pair)))
+          ""))
+      ""
+      items)))
+
+(define (main-loop clock title)
+  (block
+    (write "hello")
+
+    (lemonbar-update
+      (list
+        (cons 'left title)
+        (cons 'right clock))
+
+    (let ([line (read-line (current-input-port))])
+      (apply main-loop
+        (match (car (string->list line))
+          [#\C
+            (list
+              (lemonbar-colored-text
+                (dict-ref colors 'text)
+                (dict-ref colors 'background)
+                line)
+              title)]
+
+          [#\T
+            (list
+              clock
+              (lemonbar-colored-text
+                (dict-ref colors 'highlight)
+                (dict-ref colors 'background)
+                line))]
+                ))))))
+
+(main-loop "lol" "who needs real values?")
+
+; vim: set ft=lisp:

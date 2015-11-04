@@ -20,12 +20,14 @@ NeoBundle 'Shougo/unite.vim'
 NeoBundle 'vim-scripts/AutoComplPop'
 "NeoBundle 'vim-scripts/c.vim'
 NeoBundle 'michalbachowski/vim-wombat256mod'
+NeoBundle 'brandonbloom/vim-factor'
+NeoBundle 'bling/vim-airline'
 " }}}
 
 call neobundle#end()
 " }}} 
 
-" defaults {{{
+" options {{{
 filetype on
 filetype plugin on
 filetype indent on
@@ -33,6 +35,8 @@ filetype indent on
 syntax on
 colorscheme wombat256mod
 
+set modeline
+set laststatus=2
 set tabstop=2 shiftwidth=2 expandtab
 set foldmethod=marker
 " }}}
@@ -87,10 +91,14 @@ nnoremap <Space> za
 vnoremap <Leader>c :<Backspace><Backspace><Backspace><Backspace><Backspace>call WrapSelectionWithFold()<CR>
 " }}}
 
+NeoBundleCheck
+
 " plugin setup {{{ 
 " neocomplete {{{ 
 let g:neocomplete#enable_at_startup = 1
 " }}} 
-" }}} 
 
-NeoBundleCheck
+" airline {{{
+let g:airline_theme="kolor"
+" }}} 
+" }}} 
