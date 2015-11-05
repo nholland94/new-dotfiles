@@ -1,7 +1,7 @@
 #!/bin/sh
 #|
 
-COLOR_FOREGROUND=$(cat colors | sed -n -e 's/^foreground\s\+//p')
+COLOR_FOREGROUND=$(cat colors | sed -n -e 's/^text\s\+//p')
 COLOR_BACKGROUND=$(cat colors | sed -n -e 's/^background\s\+//p')
 
 trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
@@ -14,11 +14,12 @@ bspc config top_padding $PANEL_HEIGHT
 xtitle -sf 'T%s' > "$PANEL_FIFO" &
 clock -sf 'C%a %H:%M' > "$PANEL_FIFO" &
 
-cat "$PANEL_FIFO" | racket -u "$0" >&1
-    # | lemonbar -n "lemonpanel" -f "$PANEL_FONT_FAMILY" -F "COLOR_FOREGROUND" -B "COLOR_BACKGROUND" &
+cat "$PANEL_FIFO" | racket -u "$0" | \
+  lemonbar -n "lemonpanel" -g "x$PANEL_HEIGHT" -f "$PANEL_FONT_FAMILY" \
+    -F "#$COLOR_FOREGROUND" -B "#$COLOR_BACKGROUND" &
 
 wait
-exit 0
+exit 1
 |#
 
 #lang racket/base
@@ -48,12 +49,10 @@ exit 0
   (list->string (cdr (string->list str))))
 
 (define (lemonbar-modifier inner-text)
-  (string-join
-    (list
-      "%{"
-      inner-text
-      "}")
-    ""))
+  (string-append
+    "%{"
+    inner-text
+    "}"))
 
 (define (lemonbar-color-code color)
   (match color
@@ -62,23 +61,26 @@ exit 0
 
 (define (lemonbar-set-color color value)
   (lemonbar-modifier
-    (string-join
-      (list
-        (if (string? color) color (string (lemonbar-color-code color)))
-        value
-      ""))))
+    (string-append
+      (if (string? color) color (string (lemonbar-color-code color)))
+      "#FF"
+      value)))
+
+(define (lemonbar-unset-color color)
+  (lemonbar-modifier
+    (string-append
+      (if (string? color) color (string (lemonbar-color-code color)))
+      "-")))
 
 (define (lemonbar-colored-text foreground-color background-color text)
-  (string-join
-    (list
-      (lemonbar-set-color 'foreground foreground-color)
-      (lemonbar-set-color 'background background-color)
-      " "
-      text
-      " "
-      (lemonbar-set-color 'foreground foreground-color)
-      (lemonbar-set-color 'background background-color))
-    ""))
+  (string-append
+    (lemonbar-set-color 'foreground foreground-color)
+    (lemonbar-set-color 'background background-color)
+    " "
+    text
+    " "
+    (lemonbar-unset-color 'foreground)
+    (lemonbar-unset-color 'background)))
 
 (define (lemonbar-alignment-code alignment)
   (match alignment
@@ -86,49 +88,52 @@ exit 0
     ['center #\c]
     ['right #\r]))
 
-(define (lemonbar-update items)
-  (write
-    (foldr
+(define (build-lemonbar-string layout)
+  (string-append
+    (foldl
       (lambda (alignment-pair str)
-        (string-join
-          (list
-            str
-            (lemonbar-modifier
-              (string (lemonbar-alignment-code (car alignment-pair))))
-            (car (cdr alignment-pair)))
-          ""))
+        (string-append
+          str
+          (lemonbar-modifier
+            (string (lemonbar-alignment-code (car alignment-pair))))
+          (cdr alignment-pair)))
       ""
-      items)))
+      layout)
+    "\n"))
 
-(define (main-loop clock title)
+; sadly, there is no easy way to do this immutably without building a stack, so I'm breaking my own rules here
+(define clock "")
+(define title "")
+
+(define (lemonbar-layout)
+  (list
+    (cons 'left title)
+    (cons 'center "")
+    (cons 'right clock)))
+
+(define (lemonbar-update update-str)
   (block
-    (write "hello")
+    (match (car (string->list update-str))
+      [#\C
+        (set! clock
+          (lemonbar-colored-text
+            (dict-ref colors 'text)
+            (dict-ref colors 'background)
+            (strip-first-char update-str)))]
 
-    (lemonbar-update
-      (list
-        (cons 'left title)
-        (cons 'right clock))
+      [#\T
+        (set! title
+          (lemonbar-colored-text
+            (dict-ref colors 'highlight)
+            (dict-ref colors 'background)
+            (strip-first-char update-str)))])
 
-    (let ([line (read-line (current-input-port))])
-      (apply main-loop
-        (match (car (string->list line))
-          [#\C
-            (list
-              (lemonbar-colored-text
-                (dict-ref colors 'text)
-                (dict-ref colors 'background)
-                line)
-              title)]
+    (display (build-lemonbar-string (lemonbar-layout)))))
 
-          [#\T
-            (list
-              clock
-              (lemonbar-colored-text
-                (dict-ref colors 'highlight)
-                (dict-ref colors 'background)
-                line))]
-                ))))))
+(display "%{l}%{c}%{r}\n")
 
-(main-loop "lol" "who needs real values?")
+; infinite loop (why does racket not have "loop"?)
+(for ([i (in-naturals)])
+  (lemonbar-update (read-line (current-input-port))))
 
 ; vim: set ft=lisp:
