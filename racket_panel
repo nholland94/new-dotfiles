@@ -1,24 +1,30 @@
 #!/bin/sh
 #|
 
-COLOR_FOREGROUND=$(cat colors | sed -n -e 's/^text\s\+//p')
-COLOR_BACKGROUND=$(cat colors | sed -n -e 's/^background\s\+//p')
+COLOR_FILE=colors
 
 trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
 
+grab_from_config()
+{
+  local raw_color=$(cat "$COLOR_FILE" | sed -n -e "s/^{$1}\\s\\+//p")
+  local formatted_color=$(echo "$raw_color" | tr '[:lower:]' '[:upper:]')
+  echo "$formatted_color"
+}
+
+COLOR_FOREGROUND=$(grab_from_config text)
+COLOR_BACKGROUND=$(grab_from_config background)
+
 [ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
 mkfifo "$PANEL_FIFO"
-
 
 bspc config top_padding $PANEL_HEIGHT
 xtitle -sf 'T%s' > "$PANEL_FIFO" &
 clock -sf 'C%a %H:%M' > "$PANEL_FIFO" &
 
-cat "$PANEL_FIFO" | racket -u "$0" | \
-  lemonbar -n "lemonpanel" -g "x$PANEL_HEIGHT" -f "$PANEL_FONT_FAMILY" \
-    -F "#$COLOR_FOREGROUND" -B "#$COLOR_BACKGROUND" &
+#cat "$PANEL_FIFO" | exec panel_bar
+cat "$PANEL_FIFO" | exec racket -u "$0"
 
-wait
 exit 1
 |#
 
@@ -28,6 +34,7 @@ exit 1
 (require racket/dict)
 (require racket/match)
 (require racket/string)
+(require racket/system)
 
 (define (map-lines in fn [ls '()])
   (let ([line (read-line in)])
@@ -79,8 +86,8 @@ exit 1
     " "
     text
     " "
-    (lemonbar-unset-color 'foreground)
-    (lemonbar-unset-color 'background)))
+    (lemonbar-unset-color 'background)
+    (lemonbar-unset-color 'foreground)))
 
 (define (lemonbar-alignment-code alignment)
   (match alignment
@@ -89,17 +96,15 @@ exit 1
     ['right #\r]))
 
 (define (build-lemonbar-string layout)
-  (string-append
-    (foldl
-      (lambda (alignment-pair str)
-        (string-append
-          str
-          (lemonbar-modifier
-            (string (lemonbar-alignment-code (car alignment-pair))))
-          (cdr alignment-pair)))
-      ""
-      layout)
-    "\n"))
+  (foldr
+    (lambda (alignment-pair str)
+      (string-append
+        (lemonbar-modifier
+          (string (lemonbar-alignment-code (car alignment-pair))))
+        (cdr alignment-pair)
+        str))
+    "\n"
+    layout))
 
 ; sadly, there is no easy way to do this immutably without building a stack, so I'm breaking my own rules here
 (define clock "")
@@ -107,33 +112,53 @@ exit 1
 
 (define (lemonbar-layout)
   (list
-    (cons 'left title)
-    (cons 'center "")
-    (cons 'right clock)))
+    (cons 'left "asdf"))) 
+;    (cons 'left title)
+;    (cons 'right clock)))
 
 (define (lemonbar-update update-str)
-  (block
-    (match (car (string->list update-str))
-      [#\C
-        (set! clock
-          (lemonbar-colored-text
-            (dict-ref colors 'text)
-            (dict-ref colors 'background)
-            (strip-first-char update-str)))]
+  (match (car (string->list update-str))
+    [#\C
+      (set! clock
+        (lemonbar-colored-text
+          (dict-ref colors 'text)
+          (dict-ref colors 'background)
+          (strip-first-char update-str)))]
 
-      [#\T
-        (set! title
-          (lemonbar-colored-text
-            (dict-ref colors 'highlight)
-            (dict-ref colors 'background)
-            (strip-first-char update-str)))])
+    [#\T
+      (set! title
+        (lemonbar-colored-text
+          (dict-ref colors 'highlight)
+          (dict-ref colors 'background)
+          (strip-first-char update-str)))]))
 
-    (display (build-lemonbar-string (lemonbar-layout)))))
+; lemonbar -n "lemonpanel" -g "x$PANEL_HEIGHT" -f "$PANEL_FONT_FAMILY" \
+;   -F "#$COLOR_FOREGROUND" -B "#$COLOR_BACKGROUND" &
+(define lemonbar-process
+  (process
+    (string-append
+      "lemonbar -n racketpanel -g x24 -f "
+      (getenv "PANEL_FONT_FAMILY")
+      " -F \"#FF000000\" -B \"#FFFFFFFF\"")))
 
-(display "%{l}%{c}%{r}\n")
+#;(define static-out
+  (build-lemonbar-string (lemonbar-layout)))
 
-; infinite loop (why does racket not have "loop"?)
-(for ([i (in-naturals)])
-  (lemonbar-update (read-line (current-input-port))))
+#;(match lemonbar-process
+  [(list out in _ _ handle)
+    (for ([i (in-naturals)])
+      (write-string static-out in))])
+
+(match lemonbar-process
+  [(list out in _ _ handle)
+    (block
+      (write-string "%{l}%{c}%{r}\n" in)
+
+      ; infinite loop (why does racket not have "loop"?)
+      (for ([i (in-naturals)])
+        (block
+          (lemonbar-update (read-line (current-input-port)))
+          (write-string (build-lemonbar-string (lemonbar-layout)) (current-output-port))
+          (write-string (build-lemonbar-string (lemonbar-layout)) in))))])
 
 ; vim: set ft=lisp:
