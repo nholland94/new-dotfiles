@@ -1,0 +1,123 @@
+// EXTRAS:
+//
+// APL Keyboard Layouts
+
+// This file supports:
+// -	The Sharp APL for Unix (SAX) layout
+// -	The IBM APL2 layout
+// -	The Manugistics APL*PLUS II layout (version 5.1, 1993)
+// -	The Dyalog APL layout - with additions for box drawing and commands
+
+// Unicode APL table: http://aplwiki.com/UnicodeAplTable
+// ...and another: http://publibfp.boulder.ibm.com/epubs/pdf/h2110611.pdf (appendix A)
+// Generic Unicode stuff: http://www.fileformat.info/info/unicode/category/index.htm
+
+// Tim Nelson (this file's creator) says:
+
+// This file doesn't deal with all the combining stuff -- I'm not an APL programmer,
+// and am not quite sure what's needed here.  However, it may be possible to get this
+// working with dead keys and the like.  Patches gratefully accepted.
+
+// Some of the shift-key assignments may differ from the APL tradition.  If
+// that's not considered acceptable, it should be possible to remap the
+// shift keys.  I have striven, however, to ensure that the use of shift keys
+// in these maps is at least self-consistent.
+
+// I'm assuming that this will be used with another keyboard layout (i.e. for
+// your language), with a special shift key to use these maps.
+
+// 2011-12-22 Geoff Streeter <geoff@dyalog.com>,
+// added the Dyalog support;
+// corrected (what he thinks) are some errors:
+//   resolving the confusion between APL's and Unicode's concept of Left and Right tacks;
+//   unsure about some of the inheritance from APL2 into APLPLUS -- patches welcome;
+// complied with freedesktop.org requirement that the keycodes be in sorted order,
+// which leads to the bottom to top (roughly) definitions.
+
+// The default layout still has to be the first one. Choosing the basic Dyalog layout is
+// definitely better than using the "common" one. Choosing the complete Dyalog layout is
+// not useful to non-Dyalog users.
+
+// ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┲━━━━━━━━━┓
+// │ ⍂   │ ⌶   │ ⍫   │ ⍒   │ ⍋   │ ⌽   │ ⍉   │ ⊖   │ ⍟   │ ⍱   │ ⍲   │ !   │ ⌹   ┃         ┃
+// │ ⌻   │ ¨   │ ¯   │ <   │ ≤   │ =   │ ≥   │ >   │ ≠   │ ∨   │ ∧   │ -   │ ÷   ┃         ┃
+// │ `   │ 1   │ 2   │ 3   │ 4   │ 5   │ 6   │ 7   │ 8   │ 9   │ 0   │ +   │ ×   ┃         ┃
+// ┢━━━━━┷━┱───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┺━┯━━━━━━━┫
+// ┃       ┃     │     │     │     │     │     │     │     │     │     │ ⍞   │ ⍙   │ ⍤     ┃
+// ┃       ┃ ?   │ ⍵   │ ∊   │ ⍴   │ ~   │ ↑   │ ↓   │ ⍳   │ ○   │ *   │ →   │ ⍸   │ ⍷     ┃
+// ┃       ┃ q   │ w   │ e   │ r   │ t   │ y   │ u   │ i   │ o   │ p   │ ←   │ ⌷   │ ≡     ┃
+// ┣━━━━━━━┻┱────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┲━━━━━━━━━━━━┫
+// ┃        ┃     │     │     │     │     │     │     │     │     │ ⍎   │ ⍕   ┃            ┃
+// ┃        ┃ ⍺   │ ⌈   │ ⌊   │ _   │ ∇   │ ∆   │ ∘   │ '   │ ⎕   │ (   │ )   ┃            ┃
+// ┃        ┃ a   │ s   │ d   │ f   │ g   │ h   │ j   │ k   │ l   │ [   │ ]   ┃            ┃
+// ┣━━━━━━━┳┹────┬┴────┬┴────┬┴────┬┴────┬┴────┬┴────┬┴────┬┴────┬┴────┬┴────┲┻━━━━━━━━━━━━┫
+// ┃       ┃     │     │     │     │     │     │     │     │ ⍝   │ ⍀   │ ⌿   ┃             ┃
+// ┃       ┃     │ ⊂   │ ⊃   │ ∩   │ ∪   │ ⊥   │ ⊤   │ |   │ ;   │ :   │ \   ┃             ┃
+// ┃       ┃     │ z   │ x   │ c   │ v   │ b   │ n   │ m   │ ,   │ .   │ /   ┃             ┃
+// ┣━━━━━━━╋━━━━━┷━┳━━━┷━━━┱─┴─────┴─────┴─────┴─────┴─────┴───┲━┷━━━━━╈━━━━━┻━┳━━━━━━━┳━━━┛
+// ┃       ┃       ┃       ┃                                   ┃       ┃       ┃       ┃
+// ┃       ┃       ┃       ┃                                   ┃       ┃       ┃       ┃
+// ┃       ┃       ┃       ┃                                   ┃       ┃       ┃       ┃
+// ┗━━━━━━━┻━━━━━━━┻━━━━━━━┹───────────────────────────────────┺━━━━━━━┻━━━━━━━┻━━━━━━━┛
+
+default  partial alphanumeric_keys
+xkb_symbols "basic" {
+	include "apl(dyalog_base)"	// forward reference good APL keyboard without Dyalogs extras
+
+	name[Group1]= "Unicomp APL keyboard symbols";
+
+	key <AE01> { 	[	  1, diaeresis,	U2336		]	  }; // 1 ¨ ⌶
+	key <AE02> { 	[	  2,	U00AF,		U236B		] 	}; // 2 ¯ ⍫
+	key <AE03> { 	[	  3,	less,		  U2352		] 	}; // 3 < ⍒
+	key <AE04> { 	[	  4,	U2264,		U234B		] 	}; // 4 ≤ ⍋
+	key <AE05> { 	[	  5,	equal,		U233D		] 	}; // 5 = ⌽
+	key <AE06> { 	[	  6,	U2265,		U2349		] 	}; // 6 ≥ ⍉
+	key <AE07> { 	[	  7,	greater,	U2296		] 	}; // 7 > ⊖
+	key <AE08> { 	[	  8,	U2260,		U235F		] 	}; // 8 ≠ ⍟
+	key <AE09> { 	[	  9,	U2228,		U2371		] 	}; // 9 ∨ ⍱
+	key <AE10> { 	[	  0,	U2227,		U2372		] 	}; // 0 ∧ ⍲
+	key <AE11> {  [ plus,	minus,		exclam  ]   }; // + - !
+	key <AE12> {	[     U00D7,	U00F7,		U2339		]	}; // × ÷ ⌹
+
+	key <AD01> {	[	  q,	question,	NoSymbol 	]	}; // q ?
+	key <AD02> {	[	  w,	U2375,		NoSymbol	]	}; // w ⍵
+	key <AD03> {	[	  e,	U220A,		NoSymbol	]	}; // e ∊
+	key <AD04> {	[	  r,	U2374,		NoSymbol	]	}; // r ⍴
+	key <AD05> {	[	  t,	asciitilde,	NoSymbol	]	}; // t ~
+	key <AD06> {	[	  y,	U2191,		NoSymbol	]	}; // y ↑
+	key <AD07> {	[	  u,	U2193,		NoSymbol	]	}; // u ↓
+	key <AD08> {	[	  i,	U2373,		NoSymbol	]	}; // i ⍳
+	key <AD09> {	[	  o,	U25CB,		braceleft	]	}; // o ○
+	key <AD10> {	[	  p,	asterisk,	U2363   	]	}; // p *
+	key <AD11> {	[     U2190,	U2192,		U235E		]	}; // ← → ⍞
+	key <AD12> {	[     U2337,	U2378,		U2359		]	}; // ⌷ ⍸ ⍙
+
+	key <AC01> {	[	  a,	U237A,		NoSymbol 	]	}; // a ⍺
+	key <AC02> {	[	  s,	U2308,		NoSymbol	]	}; // s ⌈
+	key <AC03> {	[	  d,	U230A,		NoSymbol	]	}; // d ⌊
+	key <AC04> {	[	  f,	underscore,	NoSymbol	]	}; // f _ 
+	key <AC05> {	[	  g,	U2207,		NoSymbol	]	}; // g ∇
+	key <AC06> {	[	  h,	U2206,		NoSymbol	]	}; // h ∆
+	key <AC07> {	[	  j,	U2218,		NoSymbol	]	}; // j ∘
+	key <AC08> {	[	  k,	apostrophe,	NoSymbol	]	}; // k `
+	key <AC09> {	[	  l,	U2395,		NoSymbol	]	}; // l ⎕
+	key <AC10> {	[ bracketleft,	parenleft,	U234E		]	}; // [ ( ⍎
+	key <AC11> {	[ bracketright,	parenright,	U2355		]	}; // ] ) ⍕
+	                                                           
+	key <AB01> {	[	  z,	U2282,		NoSymbol 	]	}; // z ⊂
+	key <AB02> {	[	  x,	U2283,		NoSymbol	]	}; // x ⊃
+	key <AB03> {	[	  c,	U2229,		NoSymbol	]	}; // c ∩
+	key <AB04> {	[	  v,	U222A,		NoSymbol	]	}; // v ∪
+	key <AB05> {	[	  b,	U22A5,		NoSymbol	]	}; // b ⊥
+	key <AB06> {	[	  n,	U22A4,		NoSymbol	]	}; // n ⊤
+	key <AB07> {	[	  m,	U007C,		NoSymbol	]	}; // m |
+	key <AB08> {	[     comma,	semicolon,	U235D		]	}; // , ; ⍝
+	key <AB09> {	[    period,	colon,		U2340		]	}; // . : ⍀
+	key <AB10> {	[     slash,	backslash,	U233F		]	}; // / \ ⌿
+	                                                           
+	key <BKSL> {	[     U2261,	U2377,		U2364		]	}; // ≡ ⍷ ⍤
+
+	key <TLDE> {	[ backtick,	U233B,		U2342		]	}; // ` ⌻ ⍂
+
+	include "level3(ralt_switch)"
+};                                                                 

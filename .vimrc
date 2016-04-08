@@ -22,6 +22,8 @@ NeoBundle 'vim-scripts/AutoComplPop'
 NeoBundle 'michalbachowski/vim-wombat256mod'
 NeoBundle 'brandonbloom/vim-factor'
 NeoBundle 'bling/vim-airline'
+NeoBundle 'vim-scripts/ats-lang-vim'
+NeoBundle 'Prosumma/vim-rebol'
 " }}}
 
 call neobundle#end()
@@ -83,6 +85,17 @@ autocmd FileType vim let b:comment_close = ""
 " make {{{
 autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8 softtabstop=0
 " }}}
+
+" ats {{{
+autocmd BufRead,BufNewFile *.dats setf ats
+autocmd BufRead,BufNewFile *.sats setf ats
+autocmd BufRead,BufNewFile *.cats setf c
+autocmd BufRead,BufNewFile *.hats setf c
+" }}}
+
+" red {{{
+autocmd BufRead,BufNewFile *.red setf rebol
+" }}}
 " }}}
 
 " keybindings {{{
@@ -102,3 +115,10 @@ let g:neocomplete#enable_at_startup = 1
 let g:airline_theme="kolor"
 " }}} 
 " }}} 
+
+" etc... {{{
+" merlin setup {{{
+" let g:opamshar = substitute(system('opam config var shar'), '\n$', '''')
+" execute "set rtp+=" . g:opamshare . "/merlin/vim"
+" }}}
+" }}}
