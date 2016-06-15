@@ -87,7 +87,7 @@ xkb_symbols "basic" {
 	key <AD06> {	[	  y,	U2191,		NoSymbol	]	}; // y ↑
 	key <AD07> {	[	  u,	U2193,		NoSymbol	]	}; // u ↓
 	key <AD08> {	[	  i,	U2373,		NoSymbol	]	}; // i ⍳
-	key <AD09> {	[	  o,	U25CB,		braceleft	]	}; // o ○
+	key <AD09> {	[	  o,	U25CB,		NoSymbol	]	}; // o ○
 	key <AD10> {	[	  p,	asterisk,	U2363   	]	}; // p *
 	key <AD11> {	[     U2190,	U2192,		U235E		]	}; // ← → ⍞
 	key <AD12> {	[     U2337,	U2378,		U2359		]	}; // ⌷ ⍸ ⍙
@@ -109,8 +109,8 @@ xkb_symbols "basic" {
 	key <AB03> {	[	  c,	U2229,		NoSymbol	]	}; // c ∩
 	key <AB04> {	[	  v,	U222A,		NoSymbol	]	}; // v ∪
 	key <AB05> {	[	  b,	U22A5,		NoSymbol	]	}; // b ⊥
-	key <AB06> {	[	  n,	U22A4,		NoSymbol	]	}; // n ⊤
-	key <AB07> {	[	  m,	U007C,		NoSymbol	]	}; // m |
+	key <AB06> {	[	  n,	U22A4,		braceleft	]	}; // n ⊤
+	key <AB07> {	[	  m,	U007C,		braceright	]	}; // m |
 	key <AB08> {	[     comma,	semicolon,	U235D		]	}; // , ; ⍝
 	key <AB09> {	[    period,	colon,		U2340		]	}; // . : ⍀
 	key <AB10> {	[     slash,	backslash,	U233F		]	}; // / \ ⌿
