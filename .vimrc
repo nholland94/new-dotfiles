@@ -32,6 +32,7 @@ NeoBundle 'scrooloose/syntastic'
 NeoBundle 'flaflasun/vim-nightowl'
 NeoBundle 'elixir-lang/vim-elixir'
 NeoBundle 'andrewmacp/llvm.vim'
+NeoBundle 'kien/ctrlp.vim'
 " }}}
 
 call neobundle#end()
@@ -197,6 +198,7 @@ autocmd BufRead,BufNewFile *.llvm setf llvm
 nnoremap <Space> za
 nnoremap <Leader>t :TagbarToggle<CR>
 nnoremap <Leader>x :SyntasticToggleMode<CR>
+nnoremap <Leader>l :MerlinLocate<CR>
 nnoremap <Leader>p :r !xclip -selection clipboard -o<CR>
 
 vnoremap <Leader>c :<Backspace><Backspace><Backspace><Backspace><Backspace>call WrapSelectionWithFold()<CR>
@@ -207,7 +209,7 @@ NeoBundleCheck
 
 " plugin setup {{{ 
 " nerdtree {{{
-let NERDTreeIgnore=['_build$[[dir]]', 'deps$[[dir]]', 'vendor$[[dir]]']
+let NERDTreeIgnore=['_build$[[dir]]', 'deps$[[dir]]', 'vendor$[[dir]]', 'node_modules$[[dir]]']
 " }}}
 
 " neocomplete {{{ 
