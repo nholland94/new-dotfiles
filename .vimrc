@@ -28,11 +28,16 @@ NeoBundle 'vim-airline/vim-airline'
 NeoBundle 'vim-airline/vim-airline-themes'
 NeoBundle 'vim-scripts/ats-lang-vim'
 NeoBundle 'Prosumma/vim-rebol'
-NeoBundle 'scrooloose/syntastic'
 NeoBundle 'flaflasun/vim-nightowl'
 NeoBundle 'elixir-lang/vim-elixir'
 NeoBundle 'andrewmacp/llvm.vim'
 NeoBundle 'kien/ctrlp.vim'
+NeoBundle 'wilsaj/chuck.vim'
+NeoBundle 'gmoe/vim-faust'
+NeoBundle 'vim-syntastic/syntastic'
+NeoBundle 'nanotech/jellybeans.vim'
+NeoBundle 'mhartington/oceanic-next'
+NeoBundle 'stephpy/vim-yaml' " because default YAML syntax is slow in vim 7.4+
 " }}}
 
 call neobundle#end()
@@ -44,10 +49,12 @@ filetype plugin on
 filetype indent on
 
 syntax on
+colorscheme nightowl
 
 set modeline
 set laststatus=2
 set tabstop=2 shiftwidth=2 expandtab
+set smartindent
 set foldmethod=marker
 set wildmode=longest,list,full
 set wildmenu
@@ -159,6 +166,12 @@ autocmd FileType vim let b:comment_close = ""
 autocmd FileType make setlocal noexpandtab tabstop=8 shiftwidth=8 softtabstop=0
 " }}}
 
+" ada {{{
+autocmd BufRead,BufNewFile *.adb setlocal tabstop=3 shiftwidth=3
+autocmd BufRead,BufNewFile *.ads setlocal tabstop=3 shiftwidth=3
+autocmd BufRead,BufNewFile *.gpr setlocal tabstop=3 shiftwidth=3
+" }}}
+
 " ats {{{
 autocmd BufRead,BufNewFile *.dats setf ats
 autocmd BufRead,BufNewFile *.sats setf ats
@@ -192,6 +205,10 @@ let g:syntastic_d_include_dirs = add(add(map(filter(glob('~/.dub/packages/*', 1,
 " llvm {{{
 autocmd BufRead,BufNewFile *.llvm setf llvm
 " }}}
+"
+" {{{ faust
+autocmd BufRead,BufNewFile *.lib setf faust
+" }}}
 " }}}
 
 " keybindings {{{
@@ -203,6 +220,14 @@ nnoremap <Leader>p :r !xclip -selection clipboard -o<CR>
 
 vnoremap <Leader>c :<Backspace><Backspace><Backspace><Backspace><Backspace>call WrapSelectionWithFold()<CR>
 vnoremap <Leader>y :w !xclip -selection clipboard -i<CR><CR>
+
+nnoremap <C-h> :tabprevious<CR>
+nnoremap <C-l> :tabnext<CR>
+nnoremap <Left> :execute 'silent! tabmove ' . (tabpagenr()-2)<CR>
+nnoremap <Right> :execute 'silent! tabmove ' . (tabpagenr()+1)<CR>
+
+nnoremap <F11> :cp<CR>
+nnoremap <F12> :cn<CR>
 " }}}
 
 NeoBundleCheck
@@ -237,7 +262,12 @@ let g:syntastic_ignore_files = ['\m\c.ml[ly]$']
 
 let g:syntastic_cpp_compiler_options = ' -std=c++11'
 let g:syntastic_cpp_include_dirs = [ '/home/nathan/libsrc/VulkanSDK/1.0.21.1/x86_64/include' ]
-let g:syntastic_cpp_config_file = '.syntastic-config'
+let g:syntastic_cpp_config_file = '.syntastic_cpp_config'
+
+let g:syntastic_d_compiler = 'dmd'
+let g:syntastic_d_config_file = '.syntastic_dmd_config'
+
+let g:syntastic_ocaml_checkers = ['merlin']
 " }}} 
 
 " merlin {{{
@@ -293,7 +323,6 @@ let g:tagbar_type_d = {
 " etc... {{{
 " make certain terminals work under colors {{{
 set t_Co=256
-colorscheme nightowl
 " }}}
 
 " opam {{{
@@ -329,5 +358,9 @@ for tool in s:opam_packages
   endif
 endfor
 " ## end of OPAM user-setup addition for vim / base ## keep this line
+" }}}
+
+" {{{ ocp-index
+set rtp+=/home/nathan/.opam/4.04.2+32bit/share/ocp-index/vim
 " }}}
 " }}}
