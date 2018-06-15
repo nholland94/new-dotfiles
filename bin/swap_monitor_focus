@@ -1,0 +1,4 @@
+#!/bin/sh
+focused_id="$(bspc query -M -m focused)"
+other_id="$(bspc query -M | grep -v "$focused_id")"
+bspc monitor -f "$other_id"

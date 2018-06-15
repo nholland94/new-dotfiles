@@ -1,0 +1,28 @@
+#!/bin/sh
+case "$1" in
+  leave) action="desktop -f";;
+  take)  action="node -d";;
+  *)     echo "invalid action" && exit 1;;
+esac
+
+test
+primary="$(bspc query -M -m primary)"
+focused="$(bspc query -M -m focused)"
+if [ -z "$primary" ]; then
+  if [ "$2" = "swap" ]; then
+    exit 0
+  else
+    index="^$2"
+  fi
+else
+  if [ "$2" = "swap" ]; then
+    other="$(bspc query -M | grep -v "$focused")"
+    index="$(bspc query -D -d "$other:focused")"
+  elif [ ! "$primary" = "$focused" ]; then
+    index="^$(expr "$2" + 5)"
+  else
+    index="^$2"
+  fi
+fi
+
+bspc $action "$index"

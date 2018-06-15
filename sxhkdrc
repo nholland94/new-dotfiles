@@ -5,12 +5,12 @@ super + Escape
   bspc quit
 
 # Desktop Focus and Management
-alt + {_,shift + }{1-5,Tab}
-  move_to_desktop {leave,take} {1-5,swap}
-alt + {comma,period}
-	bspc desktop -C {backward,forward}
+alt + {_,shift + }{0-9,Tab}
+  move_to_desktop {leave,take} {0-9,swap}
 alt + bracket{left,right}
 	bspc desktop -f {prev,next}
+alt + m
+  bspc desktop -l next
 
 # Node Destruction
 alt + {_,shift + }w
@@ -19,31 +19,35 @@ alt + {_,shift + }w
 # Node Focus, Preselect, and Movement
 alt + {_,ctrl +,shift + }{h,j,k,l}
   bspc node -{f,p,s} {west,south,north,east}
+# alt + shift + bracket{left,right}
+# 	bspc node -C {backward,forward}
+alt + {comma,period}
+  bspc node -f {next,prev}.local
 alt + {_,shift + }c
 	bspc node -f {next,prev}
 alt + grave
 	bspc node -f last
 
+# Node State and Flags
+alt + {t,shift + t,s,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+alt + {x,y,z}
+  bspc node -g {locked,sticky,private}
+
 # Node Floating Positioning
 alt + super + {h,j,k,l}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 
-# Node Mode Setting
-alt + {t,shift + t,s,f}
-	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
-
 # Mouse Actions
 ~button1
-	bspc pointer -g focus
-alt + button{1-3}
-	; bspc pointer -g {move,resize_side,resize_corner}
-alt + @button{1-3}
-	bspc pointer -u
+  bspc node -f pointed
 
 # Applications
-alt + Return
-	urxvt
 alt + space
 	dmenu_run
 alt + shift + space
   morc_menu conf=.config/morc_menu/morc_menu.conf txt
+alt + Return
+	urxvt
+alt + b
+  chromium

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+get_monitor_position() {
+  xrandr | grep "${1}" | sed -E \
+    "s/^${1}[^0-9]*([0-9]+)x([0-9]+)\\+([0-9]+)\\+([0-9]+).*$/\\1 \\2 \\3 \\4/"
+}
+
+MON_1=DP-0
+MON_2=HDMI-0
+
+POS_1=($(get_monitor_position "${MON_1}"))
+POS_2=($(get_monitor_position "${MON_2}"))
+
+if [ "${POS_1[2]}" -lt "${POS_2[2]}" ]; then
+  DIR=right
+else
+  DIR=left
+fi
+
+xrandr --output "${MON_1}" "--${DIR}-of" "${MON_2}"
+bspc monitor "${MON_1}" -s "${MON_2}"
+launch_polybars

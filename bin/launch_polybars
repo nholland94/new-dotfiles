@@ -1,0 +1,18 @@
+#!/bin/sh
+bin=polybar
+
+launch_profile() {
+  log="/var/log/bspwm/polybar-$1.log"
+  err_log="/var/log/bspwm/polybar-$1.err"
+  "$bin" "$1" 2>$err_log 1>$log &
+}
+
+killall -q "$bin"
+while pgrep -u "$UID" -x "$bin" >/dev/null; do sleep 1; done
+
+if [ -z "$(xrandr --listmonitors | grep HDMI-0)" ]; then
+  launch_profile solo
+else
+  launch_profile primary
+  launch_profile secondary
+fi
