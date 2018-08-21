@@ -1,0 +1,4 @@
+#!/bin/sh
+xrandr --output HDMI-0 --auto --left-of DP-0
+bspc monitor HDMI-0 -d I II III IV V
+launch_polybars
